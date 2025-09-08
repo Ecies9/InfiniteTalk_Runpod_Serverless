@@ -3,19 +3,19 @@
 This document defines the end-to-end plan for deploying InfiniteTalk as a Runpod Serverless worker with a companion Gradio Web UI. It is specific to InfiniteTalk and draws only structural inspiration from the Multitalk template.
 
 References to source functions:
-- Pipeline orchestration: [Python.class InfiniteTalkPipeline()](InfiniteTalk-main/wan/multitalk.py:108)
-- Core generation: [Python.function generate_infinitetalk()](InfiniteTalk-main/wan/multitalk.py:376)
-- CLI runner and preprocessing: [Python.function generate()](InfiniteTalk-main/generate_infinitetalk.py:453)
-- Audio embedding: [Python.function get_embedding()](InfiniteTalk-main/generate_infinitetalk.py:323)
-- Gradio app: [Python.function run_graio_demo()](InfiniteTalk-main/app.py:431)
-- Video muxing: [Python.function save_video_ffmpeg](InfiniteTalk-main/wan/utils/multitalk_utils.py:1)
+- Pipeline orchestration: `Python.class InfiniteTalkPipeline()`
+- Core generation: `Python.function generate_infinitetalk()`
+- CLI runner and preprocessing: `Python.function generate()`
+- Audio embedding: `Python.function get_embedding()`
+- Gradio app: `Python.function run_graio_demo()`
+- Video muxing: `Python.function save_video_ffmpeg`
 
 Runpod worker SDK references:
-- Start worker: [Python.function runpod.serverless.start()](runpod-python-main/runpod/serverless/__init__.py:136)
-- Progress updates: [Python.function runpod.serverless.progress_update()](runpod-python-main/runpod/serverless/__init__.py:19)
-- Validator: [Python.function rp_validator.validate()](runpod-python-main/runpod/serverless/utils/rp_validator.py:1)
-- Download helpers: [Python.function rp_download.file()](runpod-python-main/runpod/serverless/utils/rp_download.py:108)
-- Upload helpers (S3/bucket): [Python.function rp_upload.upload_file_to_bucket()](runpod-python-main/runpod/serverless/utils/rp_upload.py:215)
+- Start worker: `Python.function runpod.serverless.start()`
+- Progress updates: `Python.function runpod.serverless.progress_update()`
+- Validator: `Python.function rp_validator.validate()`
+- Download helpers: `Python.function rp_download.file()`
+- Upload helpers (S3/bucket): `Python.function rp_upload.upload_file_to_bucket()`
 
 
 ## 1) System Overview and Data Flow
@@ -25,7 +25,7 @@ Components
   - Hosts a container with a worker that loads InfiniteTalk once and serves asynchronous jobs.
 - Worker (Python)
   - On cold start: loads model weights and audio encoder; subsequent jobs reuse memory.
-  - For each job: validates input, downloads inputs, computes audio embeddings if needed, runs [Python.function generate_infinitetalk()](InfiniteTalk-main/wan/multitalk.py:376), muxes audio, uploads artifacts, returns JSON result.
+  - For each job: validates input, downloads inputs, computes audio embeddings if needed, runs `Python.function generate_infinitetalk()`, muxes audio, uploads artifacts, returns JSON result.
 - Object Storage (S3-compatible or Runpod Network Volume)
   - Inputs may be user URLs; outputs are uploaded as artifacts. Prefer presigned URLs for client retrieval.
 - Gradio Web UI
@@ -35,7 +35,7 @@ High-level sequence
 1) Client (Gradio) submits job to Runpod /run with validated input payload.
 2) Worker receives job, allocates per-job temp dir, downloads inputs.
 3) Worker optionally computes audio embeddings (wav2vec2) for provided audio/TTS.
-4) Worker calls [Python.function generate_infinitetalk()](InfiniteTalk-main/wan/multitalk.py:376) iteratively (clip or streaming) with progress updates.
+4) Worker calls `Python.function generate_infinitetalk()` iteratively (clip or streaming) with progress updates.
 5) Worker writes MP4 to /tmp and uploads artifact to S3/bucket; returns JSON with URLs, metadata, and logs.
 6) Client polls until COMPLETED or FAILED and then renders the video inline.
 
@@ -46,19 +46,19 @@ Note on long videos
 ## 2) Worker Design
 
 Planned files
-- Worker entry: [Python.file handler.py](InfiniteTalk_Runpod_Serverless/worker/handler.py)
-- Validator schema: [Python.file schema.py](InfiniteTalk_Runpod_Serverless/worker/schema.py)
-- Utilities: [Python.file io_utils.py](InfiniteTalk_Runpod_Serverless/worker/io_utils.py), [Python.file logging_utils.py](InfiniteTalk_Runpod_Serverless/worker/logging_utils.py)
-- Requirements: [Python.file requirements.txt](InfiniteTalk_Runpod_Serverless/builder/requirements.txt)
-- Dockerfile: [Dockerfile Dockerfile](InfiniteTalk_Runpod_Serverless/Dockerfile)
+- Worker entry: [Python.file handler.py](worker/handler.py)
+- Validator schema: [Python.file schema.py](worker/schema.py)
+- Utilities: [Python.file io_utils.py](worker/io_utils.py), [Python.file logging_utils.py](worker/logging_utils.py)
+- Requirements: [Python.file requirements.txt](builder/requirements.txt)
+- Dockerfile: [Dockerfile Dockerfile](Dockerfile)
 
 Lifecycle
 - Init (module import)
   - Set up structured logger (JSON lines).
   - Resolve/prepare model cache paths.
   - Load InfiniteTalk pipeline once to GPU:
-    - [Python.class InfiniteTalkPipeline()](InfiniteTalk-main/wan/multitalk.py:108) with args from environment variables.
-  - Load wav2vec2 feature extractor and encoder: [Python.function custom_init()](InfiniteTalk-main/generate_infinitetalk.py:277)
+    - `Python.class InfiniteTalkPipeline()` with args from environment variables.
+  - Load wav2vec2 feature extractor and encoder: `Python.function custom_init()`
   - Optional warm-up: tiny dummy forward to trigger kernels.
 - Handler
   - Accepts job dict with input payload.
@@ -67,8 +67,8 @@ Lifecycle
   - Create /tmp/job-{id} and perform downloads/decoding:
     - cond_video (image or video) via URL/Base64/path support.
     - cond_audio per person via URL/Base64/path; or TTS text to audio using Kokoro (optional).
-  - Compute wav2vec2 embeddings (if raw audio was provided) using [Python.function get_embedding()](InfiniteTalk-main/generate_infinitetalk.py:323).
-  - Build input dict for [Python.function generate_infinitetalk()](InfiniteTalk-main/wan/multitalk.py:376) including .pt embedding paths and mux audio path.
+  - Compute wav2vec2 embeddings (if raw audio was provided) using `Python.function get_embedding()`.
+  - Build input dict for `Python.function generate_infinitetalk()` including .pt embedding paths and mux audio path.
   - Run generation; stream progress checkpoints (see below).
   - Save MP4 and upload artifact to S3/bucket with job-scoped prefix.
   - Return JSON with result URLs and metadata.
@@ -118,7 +118,7 @@ Single job input schema (top-level "input")
     - { "person1": string, "person2": string } (URL/base64/path), two speakers
   - Or TTS path:
     - tts_audio: { text: string, human1_voice?: string, human2_voice?: string }
-- audio_type: string optional — "para" | "add" (only for two speakers). See [Python.function audio_prepare_multi()](InfiniteTalk-main/generate_infinitetalk.py:291)
+- audio_type: string optional — "para" | "add" (only for two speakers). See `Python.function audio_prepare_multi()`
 - bbox: array[4] of int optional — for multi-person localization hints
 - generation params (subset mapped to InfiniteTalk):
   - size: "infinitetalk-480" | "infinitetalk-720" (default "infinitetalk-480")
@@ -135,7 +135,7 @@ Single job input schema (top-level "input")
   - base_seed: int default 42
   - num_persistent_param_in_dit: int optional (VRAM management)
   - quant: "int8" | "fp8" | null; quant_dir: string path if used
-  - offload_model: bool default true on single GPU (see [Python.function generate()](InfiniteTalk-main/generate_infinitetalk.py:453))
+  - offload_model: bool default true on single GPU (see `Python.function generate()`)
 - output_config:
   - store: "s3" | "volume" | "inline"
   - If "s3": bucket, region, prefix optional; else worker uses endpoint env vars.
@@ -255,7 +255,7 @@ Output schema (error)
 ## 4) Parameter Catalog (InfiniteTalk-specific)
 
 Mapped from CLI and app:
-- task: fixed to "infinitetalk-14B" internally; no external input required. See [Python.function generate()](InfiniteTalk-main/generate_infinitetalk.py:453)
+- task: fixed to "infinitetalk-14B" internally; no external input required. See `Python.function generate()`
 - size: "infinitetalk-480" | "infinitetalk-720" (affects sample_shift default)
 - frame_num: int, default 81, 4n+1
 - max_frame_num: int, default 1000 (streaming)
@@ -269,20 +269,20 @@ Mapped from CLI and app:
 - use_teacache: bool, default false; teacache_thresh: float default 0.2
 - use_apg: bool, default false; apg_momentum: float default -0.75; apg_norm_threshold: float default 55
 - color_correction_strength: float 0.0..1.0 default 1.0
-- num_persistent_param_in_dit: int optional (enable VRAM management) See [Python.function enable_vram_management()](InfiniteTalk-main/generate_infinitetalk.py:541)
+- num_persistent_param_in_dit: int optional (enable VRAM management) See `Python.function enable_vram_management()`
 - offload_model: bool default True (single GPU)
 - quant: "int8" | "fp8" optional; quant_dir path required if set
-- wav2vec embeddings computed internally from raw audio via [Python.function get_embedding()](InfiniteTalk-main/generate_infinitetalk.py:323)
+- wav2vec embeddings computed internally from raw audio via `Python.function get_embedding()`
 
 Audio modes
 - Single speaker local file or TTS
 - Two speakers with audio_type:
-  - "para" (parallel) or "add" (concatenate) per [Python.function audio_prepare_multi()](InfiniteTalk-main/generate_infinitetalk.py:291)
+  - "para" (parallel) or "add" (concatenate) per `Python.function audio_prepare_multi()`
 
 
 ## 5) Progress Checkpoints and Reporting
 
-Use [Python.function runpod.serverless.progress_update()](runpod-python-main/runpod/serverless/__init__.py:19) with structured payloads:
+Use `Python.function runpod.serverless.progress_update()` with structured payloads:
 ```json
 {
   "stage": "downloads_started",
@@ -325,7 +325,7 @@ Define deterministic codes for client UI and logs:
 - E_FFMPEG
   - Muxing/extraction error; retryable=true if input codec/format transient
 - E_GENERATION_RUNTIME
-  - Other runtime exception in [Python.function generate_infinitetalk()](InfiniteTalk-main/wan/multitalk.py:376); retryable=depends
+  - Other runtime exception in `Python.function generate_infinitetalk()`; retryable=depends
 - E_UPLOAD
   - Artifact upload failed; retryable=true
 - E_TIMEOUT
@@ -345,7 +345,7 @@ Example error log (JSON line)
 
 Preferred: External S3-compatible storage
 - Configure endpoint env vars: S3_ENDPOINT, S3_REGION, S3_ACCESS_KEY, S3_SECRET_KEY, S3_BUCKET, S3_PUBLIC_BASE (optional).
-- Worker uploads MP4 and thumbnail via [Python.function rp_upload.upload_file_to_bucket()](runpod-python-main/runpod/serverless/utils/rp_upload.py:215).
+- Worker uploads MP4 and thumbnail via `Python.function rp_upload.upload_file_to_bucket()`.
 - Return presigned URLs in result. Large outputs never inline.
 
 Alternative: Runpod Network Volume
@@ -367,7 +367,7 @@ Base image and CUDA
 - Install:
   - Python 3.10
   - ffmpeg (apt)
-  - pip install from [Python.file requirements.txt](InfiniteTalk-main/requirements.txt) plus worker deps
+  - pip install from `Python.file requirements.txt` plus worker deps
 - Cache layers
   - Copy only requirements first to leverage Docker layer caching.
   - Optionally bake model weights into image under /weights to reduce cold start.
@@ -377,11 +377,11 @@ Base image and CUDA
   - TORCH_CUDA_ARCH_LIST if needed
 - Entrypoint
   - python -u /workspace/worker/handler.py
-  - The handler calls [Python.function runpod.serverless.start()](runpod-python-main/runpod/serverless/__init__.py:136)
+  - The handler calls `Python.function runpod.serverless.start()`
 - Image platform: linux/amd64
 
 FFmpeg
-- Must be present for muxing and audio extraction paths (see [Python.function extract_audio_from_video()](InfiniteTalk-main/generate_infinitetalk.py:348)).
+- Must be present for muxing and audio extraction paths (see `Python.function extract_audio_from_video()`).
 
 Model caching
 - Prefer embedding checkpoints in image OR mounting a Network Volume with pre-fetched HF snapshots.
@@ -405,9 +405,9 @@ No Docker needed (Runpod SDK Local Sim)
   - Then POST to http://localhost:8008/run with JSON payload.
 
 Simple client scripts (planned in repo)
-- [Python.file submit_async.py](InfiniteTalk_Runpod_Serverless/scripts/submit_async.py): sends /run and polls /status with backoff.
-- [Python.file submit_sync.py](InfiniteTalk_Runpod_Serverless/scripts/submit_sync.py): sends /runsync for short jobs.
-- [Python.file make_payloads.py](InfiniteTalk_Runpod_Serverless/examples/make_payloads.py): converts local files to sample JSON.
+- [Python.file submit_async.py](scripts/submit_async.py): sends /run and polls /status with backoff.
+- [Python.file submit_sync.py](scripts/submit_sync.py): sends /runsync for short jobs.
+- [Python.file make_payloads.py](examples/make_payloads.py): converts local files to sample JSON.
 
 Example payloads are documented in [Markdown.file EXAMPLES.md](EXAMPLES.md).
 
@@ -438,7 +438,7 @@ Idempotency
 
 ## 11) Gradio UI Plan
 
-Planned file: [Python.file app.py](InfiniteTalk_Runpod_Serverless/ui/app.py)
+Planned file: [Python.file app.py](ui/app.py)
 
 Capabilities
 - Inputs
@@ -499,8 +499,8 @@ Error
 - Source capabilities and CLI flags: [Markdown.file infinitetalk.md](infinitetalk.md)
 - Runpod serverless playbook: [Markdown.file rpserverless.md](rpserverless.md)
 - InfiniteTalk entrypoints:
-  - [Python.file generate_infinitetalk.py](InfiniteTalk-main/generate_infinitetalk.py)
-  - [Python.file app.py](InfiniteTalk-main/app.py)
+  - `Python.file generate_infinitetalk.py`
+  - `Python.file app.py`
 
 
 ## 15) Sequence Diagram (textual description)

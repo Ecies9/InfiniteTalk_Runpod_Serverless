@@ -3,9 +3,9 @@
 Curated example payloads for common scenarios. These map to the schemas in [ARCHITECTURE.md](ARCHITECTURE.md). Use with /run (async) unless otherwise noted.
 
 References:
-- Generation core: [Python.function generate_infinitetalk()](InfiniteTalk-main/wan/multitalk.py:376)
-- Embedding extraction: [Python.function get_embedding()](InfiniteTalk-main/generate_infinitetalk.py:323)
-- Video muxing: [Python.function save_video_ffmpeg](InfiniteTalk-main/wan/utils/multitalk_utils.py:1)
+- Generation core: `Python.function generate_infinitetalk()`
+- Embedding extraction: `Python.function get_embedding()`
+- Video muxing: `Python.function save_video_ffmpeg`
 
 
 ## Conventions
@@ -205,7 +205,7 @@ Notes:
 
 - Container/codec: H.264 in MP4, 25 fps.
 - Resolution: derived from size bucket and input aspect ratio.
-- Lip-sync quality depends on audio clarity and loudness normalization (handled internally via [Python.function loudness_norm()](InfiniteTalk-main/generate_infinitetalk.py:283)).
+- Lip-sync quality depends on audio clarity and loudness normalization (handled internally via `Python.function loudness_norm()`).
 
 ## Troubleshooting Notes
 

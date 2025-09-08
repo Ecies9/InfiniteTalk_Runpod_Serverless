@@ -59,3 +59,8 @@ Thumbs.db
 InfiniteTalk_Runpod_Serverless/examples/**/*.mp4
 InfiniteTalk_Runpod_Serverless/examples/**/*.wav
 InfiniteTalk_Runpod_Serverless/examples/**/*.png
+# UI app (not needed in serverless image)
+ui/
+ui/.env
+ui/.env.local
+ui/node_modules/

@@ -4,11 +4,11 @@ This guide walks through building the worker image, creating a Runpod Serverless
 
 Key references:
 - Architecture: [Markdown.file ARCHITECTURE.md](ARCHITECTURE.md)
-- InfiniteTalk internals: [Markdown.file infinitetalk.md](infinitetalk.md)
-- Runpod serverless concepts: [Markdown.file rpserverless.md](rpserverless.md)
-- Core InfiniteTalk generation: [Python.function generate_infinitetalk()](InfiniteTalk-main/wan/multitalk.py:376)
-- Worker SDK entry: [Python.function runpod.serverless.start()](runpod-python-main/runpod/serverless/__init__.py:136)
-- Progress updates: [Python.function runpod.serverless.progress_update()](runpod-python-main/runpod/serverless/__init__.py:19)
+- InfiniteTalk internals: `Markdown.file infinitetalk.md`
+- Runpod serverless concepts: `Markdown.file rpserverless.md`
+- Core InfiniteTalk generation: `Python.function generate_infinitetalk()`
+- Worker SDK entry: `Python.function runpod.serverless.start()`
+- Progress updates: `Python.function runpod.serverless.progress_update()`
 
 
 ## 1) Build the Docker Image
@@ -28,7 +28,7 @@ Suggested steps:
   - docker build -t <registry>/infinitetalk-sls:0.1.0 .
   - docker push <registry>/infinitetalk-sls:0.1.0
 
-Image entrypoint should run the worker, which registers the handler via [Python.function runpod.serverless.start()](runpod-python-main/runpod/serverless/__init__.py:136).
+Image entrypoint should run the worker, which registers the handler via `Python.function runpod.serverless.start()`.
 
 
 ## 2) Create the Runpod Serverless Endpoint
@@ -76,9 +76,9 @@ Run the worker locally for quick tests:
   - python worker/handler.py --rp_serve_api --rp_api_port 8008
   - Note: rename handler to main if using concurrency > 1 as per Runpod SDK.
 - Submit a job:
-  - curl -X POST http://localhost:8008/run -H "Content-Type: application/json" -d @InfiniteTalk_Runpod_Serverless/examples/single_image.json
+  - curl -X POST http://localhost:8008/run -H "Content-Type: application/json" -d @examples/single_image.json
 - Or run a test input inline:
-  - python worker/handler.py --test_input "@InfiniteTalk_Runpod_Serverless/examples/single_image.json"
+  - python worker/handler.py --test_input "@examples/single_image.json"
 
 See payloads in [Markdown.file EXAMPLES.md](EXAMPLES.md).
 
@@ -86,7 +86,7 @@ See payloads in [Markdown.file EXAMPLES.md](EXAMPLES.md).
 ## 4) Using the Gradio Web UI
 
 Where:
-- UI app file path: [Python.file app.py](InfiniteTalk_Runpod_Serverless/ui/app.py)
+- UI app file path: [Python.file app.py](ui/app.py)
 
 What it does:
 - Collects your Runpod API key and Endpoint ID
@@ -97,7 +97,7 @@ What it does:
 
 Steps:
 1) Launch the UI
-   - python InfiniteTalk_Runpod_Serverless/ui/app.py
+   - python ui/app.py
 2) Configure connection
    - Enter RUNPOD_API_KEY
    - Enter ENDPOINT_ID of your InfiniteTalk endpoint
@@ -118,7 +118,7 @@ Steps:
 ## 5) Progress, Logs, and Troubleshooting
 
 Progress in Runpod:
-- Worker sends updates using [Python.function runpod.serverless.progress_update()](runpod-python-main/runpod/serverless/__init__.py:19)
+- Worker sends updates using `Python.function runpod.serverless.progress_update()`
 - Status API shows percent and latest stage detail
 - UI translates these into a progress bar and stage messages
 
@@ -152,7 +152,7 @@ Secrets:
 - Set in endpoint environment variables only; never commit to code or bake into image
 
 Payload size:
-- /run: 10 MB; /runsync: 20 MB per platform defaults (see [Markdown.file rpserverless.md](rpserverless.md))
+- /run: 10 MB; /runsync: 20 MB per platform defaults (see `Markdown.file rpserverless.md`)
 - For large inputs, upload to a Network Volume or external storage and pass paths/URLs
 
 Rate limits:
@@ -164,14 +164,14 @@ Rate limits:
 Example payloads are provided in [Markdown.file EXAMPLES.md](EXAMPLES.md).
 
 Minimal Python async submitter (planned):
-- [Python.file submit_async.py](InfiniteTalk_Runpod_Serverless/scripts/submit_async.py): POST /run and poll /status with exponential backoff
-- [Python.file submit_sync.py](InfiniteTalk_Runpod_Serverless/scripts/submit_sync.py): POST /runsync for short jobs
+- [Python.file submit_async.py](scripts/submit_async.py): POST /run and poll /status with exponential backoff
+- [Python.file submit_sync.py](scripts/submit_sync.py): POST /runsync for short jobs
 
 
 ## 8) FAQ
 
 - Q: Should I precompute audio embeddings in the UI?
-  - A: No. The worker standardizes embedding computation using [Python.function get_embedding()](InfiniteTalk-main/generate_infinitetalk.py:323), ensuring reproducibility.
+  - A: No. The worker standardizes embedding computation using `Python.function get_embedding()`, ensuring reproducibility.
 
 - Q: Recommended defaults for demos?
   - A: size=infinitetalk-480, sample_steps=8–12, mode=clip, and single speaker.

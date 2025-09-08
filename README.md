@@ -3,8 +3,8 @@
 Serverless packaging of InfiniteTalk for audio-driven video dubbing on Runpod, plus a lightweight Gradio client that submits jobs to a Runpod endpoint and previews results.
 
 Core references:
-- InfiniteTalk pipeline: [Python.class InfiniteTalkPipeline()](InfiniteTalk-main/wan/multitalk.py:108)
-- Generation entry: [Python.function generate_infinitetalk()](InfiniteTalk-main/wan/multitalk.py:376)
+- InfiniteTalk pipeline: `Python.class InfiniteTalkPipeline()`
+- Generation entry: `Python.function generate_infinitetalk()`
 - Architecture for this repo: [Markdown.file ARCHITECTURE.md](ARCHITECTURE.md)
 
 
@@ -35,7 +35,7 @@ See [Markdown.file REPO_STRUCTURE.md](REPO_STRUCTURE.md) for the planned code la
   - InfiniteTalk weights (infinitetalk_dir)
   - chinese-wav2vec2-base (wav2vec_dir)
   - Optional quant_dir for int8/fp8
-  - See InfiniteTalk setup: [Markdown.file infinitetalk.md](infinitetalk.md)
+  - See InfiniteTalk setup: `Markdown.file infinitetalk.md`
 
 Runtime dependencies (bundled in image):
 - Python 3.10, PyTorch 2.4.1, xformers 0.0.28, Flash-Attn 2.7.4.post1, ffmpeg.
@@ -69,7 +69,7 @@ Full step-by-step guide: [Markdown.file GUIDE.md](GUIDE.md)
 ## Build and Deploy Overview
 
 - Dockerfile requirements and CUDA/cuDNN: see [Markdown.file ARCHITECTURE.md](ARCHITECTURE.md)
-- Entry point: worker/handler registers with [Python.function runpod.serverless.start()](runpod-python-main/runpod/serverless/__init__.py:136)
+- Entry point: worker/handler registers with `Python.function runpod.serverless.start()`
 - Caching strategy:
   - Prefer model weights embedded or mounted via Network Volume at /runpod-volume/weights
   - Warm-up path on import to minimize cold latency
@@ -99,8 +99,8 @@ Key InfiniteTalk parameters (defaults in brackets):
 - quant: int8|fp8; quant_dir: path if quant enabled
 
 Mapped to core functions:
-- Pipeline: [Python.class InfiniteTalkPipeline()](InfiniteTalk-main/wan/multitalk.py:108)
-- Generation: [Python.function generate_infinitetalk()](InfiniteTalk-main/wan/multitalk.py:376)
+- Pipeline: `Python.class InfiniteTalkPipeline()`
+- Generation: `Python.function generate_infinitetalk()`
 
 
 ## Links

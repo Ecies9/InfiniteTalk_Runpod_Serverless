@@ -3,17 +3,17 @@
 This UI provides a single-page app to submit jobs to your Runpod Serverless InfiniteTalk worker, monitor progress, and preview/download the generated video.
 
 Key files:
-- [Python.file app.py](InfiniteTalk_Runpod_Serverless/ui/app.py)
-- [Python.file runpod_client.py](InfiniteTalk_Runpod_Serverless/ui/runpod_client.py)
-- [Python.file param_widgets.py](InfiniteTalk_Runpod_Serverless/ui/param_widgets.py)
-- [Text.file requirements.txt](InfiniteTalk_Runpod_Serverless/ui/requirements.txt)
-- [Text.file .env.example](InfiniteTalk_Runpod_Serverless/ui/.env.example)
+- [Python.file app.py](ui/app.py)
+- [Python.file runpod_client.py](ui/runpod_client.py)
+- [Python.file param_widgets.py](ui/param_widgets.py)
+- [Text.file requirements.txt](ui/requirements.txt)
+- [Text.file .env.example](ui/.env.example)
 
 References:
 - Architecture: [Markdown.file ARCHITECTURE.md](ARCHITECTURE.md)
 - Guide: [Markdown.file GUIDE.md](GUIDE.md)
-- Defaults: [YAML.file defaults.yaml](InfiniteTalk_Runpod_Serverless/config/defaults.yaml)
-- Validator schema: [Python.file validator.py](InfiniteTalk_Runpod_Serverless/worker/validator.py)
+- Defaults: [YAML.file defaults.yaml](config/defaults.yaml)
+- Validator schema: [Python.file validator.py](worker/validator.py)
 
 
 ## 1) Install
@@ -27,12 +27,12 @@ python -m venv .venv
 # macOS/Linux:
 # source .venv/bin/activate
 
-pip install -r InfiniteTalk_Runpod_Serverless/ui/requirements.txt
+pip install -r ui/requirements.txt
 ```
 
 Optionally copy env template and set your values:
 ```bash
-cp InfiniteTalk_Runpod_Serverless/ui/.env.example InfiniteTalk_Runpod_Serverless/ui/.env
+cp ui/.env.example ui/.env
 ```
 
 Then edit `.env` with your credentials:
@@ -44,10 +44,10 @@ Then edit `.env` with your credentials:
 
 Either run the script directly:
 ```bash
-python InfiniteTalk_Runpod_Serverless/ui/app.py
+python ui/app.py
 ```
 
-Or from the `InfiniteTalk_Runpod_Serverless/ui` directory:
+Or from the `ui` directory:
 ```bash
 # From inside the ui/ folder
 python -m app
@@ -79,7 +79,7 @@ Acceptance note: The UI is also import-safe to allow running via `python -m` for
     - base_seed, num_persistent_param_in_dit, offload_model
     - quant (+ quant_dir)
     - Output store selection: s3 | volume | inline
-  - Values initialize from [YAML.file defaults.yaml](InfiniteTalk_Runpod_Serverless/config/defaults.yaml).
+  - Values initialize from [YAML.file defaults.yaml](config/defaults.yaml).
 
 - Progress/Logs tab:
   - Live percent and stage based on Runpod status and worker checkpoints.
@@ -90,8 +90,8 @@ Acceptance note: The UI is also import-safe to allow running via `python -m` for
   - Artifacts and timings rendered as JSON.
 
 - Submit:
-  - The app calls Runpod `/run` async via [Python.function submit_job()](InfiniteTalk_Runpod_Serverless/ui/runpod_client.py:1).
-  - Polls `/status` via [Python.function get_status()](InfiniteTalk_Runpod_Serverless/ui/runpod_client.py:1) with adaptive backoff per the architecture plan.
+  - The app calls Runpod `/run` async via [Python.function submit_job()](ui/runpod_client.py:1).
+  - Polls `/status` via [Python.function get_status()](ui/runpod_client.py:1) with adaptive backoff per the architecture plan.
 
 
 ## 4) Behavior Details
@@ -104,7 +104,7 @@ Acceptance note: The UI is also import-safe to allow running via `python -m` for
   - Starts at 2s interval, backs off up to 6s based on elapsed time.
 
 - Error handling:
-  - Worker error codes (E_*) are mapped to friendly messages with tips and a link to [GUIDE.md troubleshooting](InfiniteTalk_Runpod_Serverless/GUIDE.md#troubleshooting).
+  - Worker error codes (E_*) are mapped to friendly messages with tips and a link to [GUIDE.md troubleshooting](GUIDE.md).
 
 - Sanity checks:
   - Minimal checks: frame_num must be 4n+1, steps within [1, 1000], color correction in [0.0, 1.0], quant_dir required if quant is set.
@@ -122,8 +122,8 @@ Acceptance note: The UI is also import-safe to allow running via `python -m` for
 
 ## 6) Development Notes
 
-- UI blocks built in [Python.function build_ui()](InfiniteTalk_Runpod_Serverless/ui/app.py:1).
+- UI blocks built in [Python.function build_ui()](ui/app.py:1).
 - Runpod client wrapper implements:
-  - [Python.function submit_job()](InfiniteTalk_Runpod_Serverless/ui/runpod_client.py:1)
-  - [Python.function get_status()](InfiniteTalk_Runpod_Serverless/ui/runpod_client.py:1)
-  - [Python.function extract_progress()](InfiniteTalk_Runpod_Serverless/ui/runpod_client.py:1)
+  - [Python.function submit_job()](ui/runpod_client.py:1)
+  - [Python.function get_status()](ui/runpod_client.py:1)
+  - [Python.function extract_progress()](ui/runpod_client.py:1)

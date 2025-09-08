@@ -3,8 +3,8 @@
 This doc covers building the CUDA-enabled worker image for Runpod Serverless, a slim CPU-only image for CI/import checks, and local run commands.
 
 References:
-- Entry point: [Python.file entrypoint.py](InfiniteTalk_Runpod_Serverless/entrypoint.py:1)
-- Worker requirements: [Markdown.file requirements.txt](InfiniteTalk_Runpod_Serverless/worker/requirements.txt)
+- Entry point: [Python.file entrypoint.py](entrypoint.py:1)
+- Worker requirements: [Markdown.file requirements.txt](worker/requirements.txt)
 - Full guide: [Markdown.file GUIDE.md](GUIDE.md)
 
 ## Prerequisites
@@ -19,18 +19,18 @@ References:
 From repo root (where the InfiniteTalk_Runpod_Serverless directory resides):
 
 GPU (CUDA 12.1 + cuDNN; Torch 2.4.1, TorchVision 0.19.1, XFormers 0.0.28):
-- docker build -t infinitetalk-runpod:gpu -f InfiniteTalk_Runpod_Serverless/Dockerfile .
+- docker build -t infinitetalk-runpod:gpu -f Dockerfile .
 
 CPU-only (non-inference; for CI/import validation):
-- docker build -t infinitetalk-runpod:cpu -f InfiniteTalk_Runpod_Serverless/Dockerfile.cpu .
+- docker build -t infinitetalk-runpod:cpu -f Dockerfile.cpu .
 
 Optional model prefetch at build (not recommended for serverless due to image size):
-- PREFETCH_MODELS=1 docker build -t infinitetalk-runpod:gpu -f InfiniteTalk_Runpod_Serverless/Dockerfile .
+- PREFETCH_MODELS=1 docker build -t infinitetalk-runpod:gpu -f Dockerfile .
 
 Helper scripts:
-- Build (Linux/macOS): [Bash.file build_image.sh](InfiniteTalk_Runpod_Serverless/scripts/build_image.sh:1)
-- Build (Windows PowerShell): [PowerShell.file build_image.ps1](InfiniteTalk_Runpod_Serverless/scripts/build_image.ps1:1)
-- Push: [Bash.file push_image.sh](InfiniteTalk_Runpod_Serverless/scripts/push_image.sh:1)
+- Build (Linux/macOS): [Bash.file build_image.sh](scripts/build_image.sh:1)
+- Build (Windows PowerShell): [PowerShell.file build_image.ps1](scripts/build_image.ps1:1)
+- Push: [Bash.file push_image.sh](scripts/push_image.sh:1)
 
 ## Local Test
 
@@ -38,8 +38,8 @@ GPU host (verifies the worker boots and registers the handler):
 - docker run --rm --gpus all -e RP_DEBUG_LOCAL=1 -p 8008:8008 infinitetalk-runpod:gpu
 
 Notes:
-- Requires nvidia-container-runtime. On success, the container starts the Runpod serverless local sim via [Python.function runpod.serverless.start()](runpod-python-main/runpod/serverless/__init__.py:136) from [Python.file entrypoint.py](InfiniteTalk_Runpod_Serverless/entrypoint.py:18).
-- Logs should show the worker starting without import errors. Handler function is defined in [Python.file handler.py](InfiniteTalk_Runpod_Serverless/worker/handler.py:245).
+- Requires nvidia-container-runtime. On success, the container starts the Runpod serverless local sim via `Python.function runpod.serverless.start()` from [Python.file entrypoint.py](entrypoint.py:18).
+- Logs should show the worker starting without import errors. Handler function is defined in [Python.file handler.py](worker/handler.py:245).
 
 CPU-only quick import check (no GPU, no inference):
 - docker run --rm infinitetalk-runpod:cpu python -c "import InfiniteTalk_Runpod_Serverless.worker.handler as h; print('ok')"
@@ -50,7 +50,7 @@ CPU-only quick import check (no GPU, no inference):
 - IMAGE=<registry/namespace/infinitetalk-runpod:gpu>
 - docker tag infinitetalk-runpod:gpu $IMAGE
 - docker push $IMAGE
-  - Or use [Bash.file push_image.sh](InfiniteTalk_Runpod_Serverless/scripts/push_image.sh:1)
+  - Or use [Bash.file push_image.sh](scripts/push_image.sh:1)
 
 2) Create Endpoint (Runpod Console → Serverless → New → Import Docker):
 - Image: <registry/namespace/infinitetalk-runpod:gpu>
@@ -73,6 +73,6 @@ Cross-link: See endpoint creation details in [Markdown.file GUIDE.md](GUIDE.md).
 
 ## Notes
 
-- The GPU Dockerfile installs CUDA-compatible torch/torchvision/xformers that match [Markdown.file requirements.txt](InfiniteTalk_Runpod_Serverless/worker/requirements.txt). flash-attn is not installed in-image (building from source would require CUDA toolkit). If your pipeline requires it at runtime, provide compatible wheels via a private index or switch to a devel base and add a compile step.
+- The GPU Dockerfile installs CUDA-compatible torch/torchvision/xformers that match [Markdown.file requirements.txt](worker/requirements.txt). flash-attn is not installed in-image (building from source would require CUDA toolkit). If your pipeline requires it at runtime, provide compatible wheels via a private index or switch to a devel base and add a compile step.
 - Caches: HF_HOME and TRANSFORMERS_CACHE default to /root/.cache/huggingface; for serverless, prefer runtime fetch or mount a volume.
-- Entry command is python [Python.file entrypoint.py](InfiniteTalk_Runpod_Serverless/entrypoint.py:18), which calls [Python.function runpod.serverless.start()](runpod-python-main/runpod/serverless/__init__.py:136).
+- Entry command is python [Python.file entrypoint.py](entrypoint.py:18), which calls `Python.function runpod.serverless.start()`.
