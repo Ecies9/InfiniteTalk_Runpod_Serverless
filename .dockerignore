@@ -15,9 +15,6 @@ env/
 
 # Node / UI
 node_modules/
-InfiniteTalk_Runpod_Serverless/ui/node_modules/
-InfiniteTalk_Runpod_Serverless/ui/.env
-InfiniteTalk_Runpod_Serverless/ui/.env.local
 
 # Large model/artifact files (fetched at runtime or mounted via volume)
 *.pt
@@ -56,9 +53,9 @@ Thumbs.db
 .idea/
 
 # Project-level ignores
-InfiniteTalk_Runpod_Serverless/examples/**/*.mp4
-InfiniteTalk_Runpod_Serverless/examples/**/*.wav
-InfiniteTalk_Runpod_Serverless/examples/**/*.png
+examples/**/*.mp4
+examples/**/*.wav
+examples/**/*.png
 # UI app (not needed in serverless image)
 ui/
 ui/.env

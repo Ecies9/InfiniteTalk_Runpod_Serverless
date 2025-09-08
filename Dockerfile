@@ -41,7 +41,7 @@ WORKDIR /workspace
 
 # Copy only the worker subset first to leverage Docker layer caching on pip installs
 # Copy requirements to install dependencies
-COPY InfiniteTalk_Runpod_Serverless/worker/requirements.txt ./InfiniteTalk_Runpod_Serverless/worker/requirements.txt
+COPY worker/requirements.txt ./worker/requirements.txt
 
 # Install CUDA-compatible core deps:
 # - torch/torchvision/torchaudio from cu121 index
@@ -56,7 +56,7 @@ RUN --mount=type=cache,target=/root/.cache/pip \
 # Install remaining Python dependencies from requirements, excluding heavy CUDA-specific lines we already installed.
 # Filter out torch/torchvision/xformers/flash-attn to avoid conflicts.
 RUN set -ex; \
-    grep -vE '^(torch|torchvision|xformers|flash-attn)\\b' InfiniteTalk_Runpod_Serverless/worker/requirements.txt > /tmp/req.txt; \
+    grep -vE '^(torch|torchvision|xformers|flash-attn)\\b' worker/requirements.txt > /tmp/req.txt; \
     pip install --no-cache-dir -r /tmp/req.txt; \
     rm -f /tmp/req.txt
 
@@ -80,7 +80,7 @@ ENV PYTHONDONTWRITEBYTECODE=1
 
 # Health: make sure Python can import the worker entrypoint
 # The entrypoint sets sys.path to ensure proper imports.
-WORKDIR /workspace/InfiniteTalk_Runpod_Serverless
+WORKDIR /workspace
 
 # Clean up any build-time leftovers (keep runtime libs only)
 # Note: We keep ffmpeg/libsndfile and Python; build-essential and python3-dev can be removed to slim further

@@ -2,7 +2,7 @@ Param(
     [string]$Tag = $env:TAG
         ? $env:TAG
         : "infinitetalk-runpod:gpu",
-    [string]$Dockerfile = "InfiniteTalk_Runpod_Serverless/Dockerfile",
+    [string]$Dockerfile = "Dockerfile",
     [int]$PrefetchModels = $(If ($env:PREFETCH_MODELS) { [int]$env:PREFETCH_MODELS } Else { 0 })
 )
 
