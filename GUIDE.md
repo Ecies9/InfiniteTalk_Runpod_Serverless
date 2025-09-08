@@ -3,7 +3,7 @@
 This guide walks through building the worker image, creating a Runpod Serverless endpoint, configuring environment variables, understanding cold starts, and using the bundled Gradio UI to submit jobs and download results. Troubleshooting tips and known errors are listed at the end.
 
 Key references:
-- Architecture: [Markdown.file ARCHITECTURE.md](InfiniteTalk_Runpod_Serverless/ARCHITECTURE.md)
+- Architecture: [Markdown.file ARCHITECTURE.md](ARCHITECTURE.md)
 - InfiniteTalk internals: [Markdown.file infinitetalk.md](infinitetalk.md)
 - Runpod serverless concepts: [Markdown.file rpserverless.md](rpserverless.md)
 - Core InfiniteTalk generation: [Python.function generate_infinitetalk()](InfiniteTalk-main/wan/multitalk.py:376)
@@ -13,14 +13,14 @@ Key references:
 
 ## 1) Build the Docker Image
 
-Base requirements (see detailed plan in [Markdown.file ARCHITECTURE.md](InfiniteTalk_Runpod_Serverless/ARCHITECTURE.md)):
+Base requirements (see detailed plan in [Markdown.file ARCHITECTURE.md](ARCHITECTURE.md)):
 - CUDA 12.1 runtime compatible with Torch 2.4.1 + xformers 0.0.28
 - Python 3.10
 - ffmpeg installed at OS level
 - Python deps from InfiniteTalk and worker requirements
 
 Suggested steps:
-- Create Dockerfile as specified in [Markdown.file ARCHITECTURE.md](InfiniteTalk_Runpod_Serverless/ARCHITECTURE.md) section 8.
+- Create Dockerfile as specified in [Markdown.file ARCHITECTURE.md](ARCHITECTURE.md) section 8.
 - Bake model weights or attach a Network Volume:
   - Bake for fastest cold starts (larger image)
   - Network Volume for flexibility and smaller images
@@ -80,7 +80,7 @@ Run the worker locally for quick tests:
 - Or run a test input inline:
   - python worker/handler.py --test_input "@InfiniteTalk_Runpod_Serverless/examples/single_image.json"
 
-See payloads in [Markdown.file EXAMPLES.md](InfiniteTalk_Runpod_Serverless/EXAMPLES.md).
+See payloads in [Markdown.file EXAMPLES.md](EXAMPLES.md).
 
 
 ## 4) Using the Gradio Web UI
@@ -107,7 +107,7 @@ Steps:
 4) Set parameters
    - size (infinitetalk-480/720), mode (clip/streaming), sample_steps, guidance scales, motion_frame, color correction
 5) Submit
-   - The UI sends a /run request containing an input payload matching the schemas in [Markdown.file ARCHITECTURE.md](InfiniteTalk_Runpod_Serverless/ARCHITECTURE.md)
+   - The UI sends a /run request containing an input payload matching the schemas in [Markdown.file ARCHITECTURE.md](ARCHITECTURE.md)
 6) Monitor
    - Progress is polled every 2s, backed off as runtime increases
    - Intermediate progress updates are displayed (validation, downloads, embeddings, chunk sampling, muxing, upload)
@@ -125,7 +125,7 @@ Progress in Runpod:
 Structured logs:
 - JSON Lines with job_id correlation:
   - {"ts":"...","level":"INFO|ERROR","job_id":"...","event":"...","details":{...}}
-- Examples in [Markdown.file ARCHITECTURE.md](InfiniteTalk_Runpod_Serverless/ARCHITECTURE.md) section 13
+- Examples in [Markdown.file ARCHITECTURE.md](ARCHITECTURE.md) section 13
 
 Common errors (codes are surfaced in the UI):
 - E_INPUT_VALIDATION — missing/invalid field; fix payload
@@ -161,7 +161,7 @@ Rate limits:
 
 ## 7) Example Requests and CLI
 
-Example payloads are provided in [Markdown.file EXAMPLES.md](InfiniteTalk_Runpod_Serverless/EXAMPLES.md).
+Example payloads are provided in [Markdown.file EXAMPLES.md](EXAMPLES.md).
 
 Minimal Python async submitter (planned):
 - [Python.file submit_async.py](InfiniteTalk_Runpod_Serverless/scripts/submit_async.py): POST /run and poll /status with exponential backoff

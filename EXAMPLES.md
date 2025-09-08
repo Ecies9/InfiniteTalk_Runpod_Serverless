@@ -1,6 +1,6 @@
 # Examples — InfiniteTalk Runpod Serverless
 
-Curated example payloads for common scenarios. These map to the schemas in [ARCHITECTURE.md](InfiniteTalk_Runpod_Serverless/ARCHITECTURE.md). Use with /run (async) unless otherwise noted.
+Curated example payloads for common scenarios. These map to the schemas in [ARCHITECTURE.md](ARCHITECTURE.md). Use with /run (async) unless otherwise noted.
 
 References:
 - Generation core: [Python.function generate_infinitetalk()](InfiniteTalk-main/wan/multitalk.py:376)

@@ -3,7 +3,7 @@
 This document specifies the planned directory layout, key files, and purposes for the InfiniteTalk Serverless worker and Gradio UI.
 
 Primary references:
-- Architecture and schemas: [ARCHITECTURE.md](InfiniteTalk_Runpod_Serverless/ARCHITECTURE.md)
+- Architecture and schemas: [ARCHITECTURE.md](ARCHITECTURE.md)
 - InfiniteTalk generation entry: [generate_infinitetalk.py](InfiniteTalk-main/generate_infinitetalk.py)
 - Pipeline class: [Python.class InfiniteTalkPipeline()](InfiniteTalk-main/wan/multitalk.py:108)
 - Runpod worker start: [Python.function runpod.serverless.start()](runpod-python-main/runpod/serverless/__init__.py:136)
@@ -11,11 +11,11 @@ Primary references:
 
 ## Top-level
 
-- [README.md](InfiniteTalk_Runpod_Serverless/README.md) — Summary, features, prerequisites, quickstart, links.
-- [ARCHITECTURE.md](InfiniteTalk_Runpod_Serverless/ARCHITECTURE.md) — System design, worker lifecycle, schemas, progress, logging, storage, performance.
-- [GUIDE.md](InfiniteTalk_Runpod_Serverless/GUIDE.md) — Step-by-step setup, UI usage, troubleshooting, FAQs.
-- [REPO_STRUCTURE.md](InfiniteTalk_Runpod_Serverless/REPO_STRUCTURE.md) — This file.
-- [EXAMPLES.md](InfiniteTalk_Runpod_Serverless/EXAMPLES.md) — Curated payloads for single, multi-speaker, TTS, batch.
+- [README.md](README.md) — Summary, features, prerequisites, quickstart, links.
+- [ARCHITECTURE.md](ARCHITECTURE.md) — System design, worker lifecycle, schemas, progress, logging, storage, performance.
+- [GUIDE.md](GUIDE.md) — Step-by-step setup, UI usage, troubleshooting, FAQs.
+- [REPO_STRUCTURE.md](REPO_STRUCTURE.md) — This file.
+- [EXAMPLES.md](EXAMPLES.md) — Curated payloads for single, multi-speaker, TTS, batch.
 - [Dockerfile](InfiniteTalk_Runpod_Serverless/Dockerfile) — Worker image build (as planned in architecture).
 - [LICENSE](InfiniteTalk_Runpod_Serverless/LICENSE) — Optional license for this packaging (not included yet).
 
@@ -94,8 +94,8 @@ Primary references:
 
 ## Cross-Links
 
-- Inputs/outputs and payload schemas: [ARCHITECTURE.md](InfiniteTalk_Runpod_Serverless/ARCHITECTURE.md)
-- Example payloads and notes: [EXAMPLES.md](InfiniteTalk_Runpod_Serverless/EXAMPLES.md)
+- Inputs/outputs and payload schemas: [ARCHITECTURE.md](ARCHITECTURE.md)
+- Example payloads and notes: [EXAMPLES.md](EXAMPLES.md)
 - InfiniteTalk CLI and helpers:
   - [generate_infinitetalk.py](InfiniteTalk-main/generate_infinitetalk.py)
   - [Python.function get_embedding()](InfiniteTalk-main/generate_infinitetalk.py:323)

@@ -409,7 +409,7 @@ Simple client scripts (planned in repo)
 - [Python.file submit_sync.py](InfiniteTalk_Runpod_Serverless/scripts/submit_sync.py): sends /runsync for short jobs.
 - [Python.file make_payloads.py](InfiniteTalk_Runpod_Serverless/examples/make_payloads.py): converts local files to sample JSON.
 
-Example payloads are documented in [Markdown.file EXAMPLES.md](InfiniteTalk_Runpod_Serverless/EXAMPLES.md).
+Example payloads are documented in [Markdown.file EXAMPLES.md](EXAMPLES.md).
 
 
 ## 10) Security, Validation, and Limits

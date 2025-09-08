@@ -5,7 +5,7 @@ This doc covers building the CUDA-enabled worker image for Runpod Serverless, a 
 References:
 - Entry point: [Python.file entrypoint.py](InfiniteTalk_Runpod_Serverless/entrypoint.py:1)
 - Worker requirements: [Markdown.file requirements.txt](InfiniteTalk_Runpod_Serverless/worker/requirements.txt)
-- Full guide: [Markdown.file GUIDE.md](InfiniteTalk_Runpod_Serverless/GUIDE.md)
+- Full guide: [Markdown.file GUIDE.md](GUIDE.md)
 
 ## Prerequisites
 
@@ -69,7 +69,7 @@ CPU-only quick import check (no GPU, no inference):
 
 4) Weights: Attach a Network Volume at /runpod-volume or bake weights into the image (larger image, faster cold starts).
 
-Cross-link: See endpoint creation details in [Markdown.file GUIDE.md](InfiniteTalk_Runpod_Serverless/GUIDE.md).
+Cross-link: See endpoint creation details in [Markdown.file GUIDE.md](GUIDE.md).
 
 ## Notes
 

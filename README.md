@@ -5,7 +5,7 @@ Serverless packaging of InfiniteTalk for audio-driven video dubbing on Runpod, p
 Core references:
 - InfiniteTalk pipeline: [Python.class InfiniteTalkPipeline()](InfiniteTalk-main/wan/multitalk.py:108)
 - Generation entry: [Python.function generate_infinitetalk()](InfiniteTalk-main/wan/multitalk.py:376)
-- Architecture for this repo: [Markdown.file ARCHITECTURE.md](InfiniteTalk_Runpod_Serverless/ARCHITECTURE.md)
+- Architecture for this repo: [Markdown.file ARCHITECTURE.md](ARCHITECTURE.md)
 
 
 ## Features
@@ -22,7 +22,7 @@ Core references:
 
 ## Repository Structure
 
-See [Markdown.file REPO_STRUCTURE.md](InfiniteTalk_Runpod_Serverless/REPO_STRUCTURE.md) for the planned code layout (worker, ui, examples, scripts, Dockerfile, configs).
+See [Markdown.file REPO_STRUCTURE.md](REPO_STRUCTURE.md) for the planned code layout (worker, ui, examples, scripts, Dockerfile, configs).
 
 
 ## Prerequisites
@@ -44,10 +44,10 @@ Runtime dependencies (bundled in image):
 ## Quickstart
 
 1) Review architecture and schemas
-- Read [Markdown.file ARCHITECTURE.md](InfiniteTalk_Runpod_Serverless/ARCHITECTURE.md) for the worker lifecycle, input/output schemas, logging, and storage.
+- Read [Markdown.file ARCHITECTURE.md](ARCHITECTURE.md) for the worker lifecycle, input/output schemas, logging, and storage.
 
 2) Build the image
-- Use the Dockerfile plan in [Markdown.file ARCHITECTURE.md](InfiniteTalk_Runpod_Serverless/ARCHITECTURE.md) section 8.
+- Use the Dockerfile plan in [Markdown.file ARCHITECTURE.md](ARCHITECTURE.md) section 8.
 - Tag with semantic version (e.g., infinitetalk-sls:0.1.0).
 
 3) Create a Runpod Serverless endpoint
@@ -57,18 +57,18 @@ Runtime dependencies (bundled in image):
 
 4) Test locally (optional)
 - Serve local API from the worker: python worker/handler.py --rp_serve_api --rp_api_port 8008
-- POST example payloads from [Markdown.file EXAMPLES.md](InfiniteTalk_Runpod_Serverless/EXAMPLES.md).
+- POST example payloads from [Markdown.file EXAMPLES.md](EXAMPLES.md).
 
 5) Use the Gradio UI
 - Launch the UI app and input your Runpod API key and Endpoint ID.
 - Upload image/video/audio (or TTS), set parameters, submit, and monitor progress.
 
-Full step-by-step guide: [Markdown.file GUIDE.md](InfiniteTalk_Runpod_Serverless/GUIDE.md)
+Full step-by-step guide: [Markdown.file GUIDE.md](GUIDE.md)
 
 
 ## Build and Deploy Overview
 
-- Dockerfile requirements and CUDA/cuDNN: see [Markdown.file ARCHITECTURE.md](InfiniteTalk_Runpod_Serverless/ARCHITECTURE.md)
+- Dockerfile requirements and CUDA/cuDNN: see [Markdown.file ARCHITECTURE.md](ARCHITECTURE.md)
 - Entry point: worker/handler registers with [Python.function runpod.serverless.start()](runpod-python-main/runpod/serverless/__init__.py:136)
 - Caching strategy:
   - Prefer model weights embedded or mounted via Network Volume at /runpod-volume/weights
@@ -105,7 +105,7 @@ Mapped to core functions:
 
 ## Links
 
-- Design: [Markdown.file ARCHITECTURE.md](InfiniteTalk_Runpod_Serverless/ARCHITECTURE.md)
-- Setup and usage: [Markdown.file GUIDE.md](InfiniteTalk_Runpod_Serverless/GUIDE.md)
-- Examples: [Markdown.file EXAMPLES.md](InfiniteTalk_Runpod_Serverless/EXAMPLES.md)
-- Structure: [Markdown.file REPO_STRUCTURE.md](InfiniteTalk_Runpod_Serverless/REPO_STRUCTURE.md)
+- Design: [Markdown.file ARCHITECTURE.md](ARCHITECTURE.md)
+- Setup and usage: [Markdown.file GUIDE.md](GUIDE.md)
+- Examples: [Markdown.file EXAMPLES.md](EXAMPLES.md)
+- Structure: [Markdown.file REPO_STRUCTURE.md](REPO_STRUCTURE.md)

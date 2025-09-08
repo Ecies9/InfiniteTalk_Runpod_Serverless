@@ -10,8 +10,8 @@ Key files:
 - [Text.file .env.example](InfiniteTalk_Runpod_Serverless/ui/.env.example)
 
 References:
-- Architecture: [Markdown.file ARCHITECTURE.md](InfiniteTalk_Runpod_Serverless/ARCHITECTURE.md)
-- Guide: [Markdown.file GUIDE.md](InfiniteTalk_Runpod_Serverless/GUIDE.md)
+- Architecture: [Markdown.file ARCHITECTURE.md](ARCHITECTURE.md)
+- Guide: [Markdown.file GUIDE.md](GUIDE.md)
 - Defaults: [YAML.file defaults.yaml](InfiniteTalk_Runpod_Serverless/config/defaults.yaml)
 - Validator schema: [Python.file validator.py](InfiniteTalk_Runpod_Serverless/worker/validator.py)
 
@@ -97,7 +97,7 @@ Acceptance note: The UI is also import-safe to allow running via `python -m` for
 ## 4) Behavior Details
 
 - Input packaging:
-  - Local files are encoded to base64 data URLs for portability and sent in the payload matching the worker schema described in [Markdown.file ARCHITECTURE.md](InfiniteTalk_Runpod_Serverless/ARCHITECTURE.md).
+  - Local files are encoded to base64 data URLs for portability and sent in the payload matching the worker schema described in [Markdown.file ARCHITECTURE.md](ARCHITECTURE.md).
   - If you prefer presigned uploads, provide URLs directly; the worker can download them.
 
 - Polling cadence:
