@@ -66,12 +66,14 @@ COPY . /workspace
 # Optional: prefetch models to cache inside image (not recommended for serverless due to image size).
 # Implement your own lightweight prefetch logic in a safe, skippable way.
 # When PREFETCH_MODELS=1, try to import minimal code and touch common model caches.
-RUN if [ "$PREFETCH_MODELS" = "1" ]; then \
-      python3 - <<'PY' || true; \
-      import os; \
-      print("Prefetch step placeholder: implement model snapshot downloads if desired."); \
-PY \
-    ; fi
+RUN <<'SH'
+if [ "$PREFETCH_MODELS" = "1" ]; then
+  python3 - <<'PY' || true
+import os
+print("Prefetch step placeholder: implement model snapshot downloads if desired.")
+PY
+fi
+SH
 
 # Default user environment tweaks (safe defaults)
 ENV PYTHONDONTWRITEBYTECODE=1
