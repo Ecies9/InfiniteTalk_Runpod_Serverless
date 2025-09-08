@@ -1,0 +1,61 @@
+# Git / VCS
+.git
+.gitignore
+.gitattributes
+
+# Python caches and venvs
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+*.egg-info/
+.venv/
+venv/
+env/
+
+# Node / UI
+node_modules/
+InfiniteTalk_Runpod_Serverless/ui/node_modules/
+InfiniteTalk_Runpod_Serverless/ui/.env
+InfiniteTalk_Runpod_Serverless/ui/.env.local
+
+# Large model/artifact files (fetched at runtime or mounted via volume)
+*.pt
+*.bin
+*.ckpt
+*.safetensors
+*.onnx
+*.tflite
+*.npz
+*.npy
+
+# Local outputs / temp
+outputs/
+output/
+runs/
+logs/
+tmp/
+temp/
+.cache/
+.cache/**
+wandb/
+
+# HuggingFace caches (prefer runtime volume/cache)
+~/.cache/huggingface/
+root/.cache/huggingface/
+**/huggingface/**
+
+# Notebooks and dev files
+*.ipynb
+notebooks/
+
+# OS/editor
+.DS_Store
+Thumbs.db
+.vscode/
+.idea/
+
+# Project-level ignores
+InfiniteTalk_Runpod_Serverless/examples/**/*.mp4
+InfiniteTalk_Runpod_Serverless/examples/**/*.wav
+InfiniteTalk_Runpod_Serverless/examples/**/*.png

@@ -1,0 +1,29 @@
+# Core runtime
+torch==2.4.1
+torchvision==0.19.1
+xformers==0.0.28.post2
+flash-attn==2.7.4.post1
+
+# Runpod worker SDK
+runpod==1.7.1
+
+# Media and numerics
+ffmpeg-python==0.2.0
+numpy==1.26.4
+opencv-python-headless==4.10.0.84
+Pillow==10.4.0
+soundfile==0.12.1
+librosa==0.10.2.post1
+pyloudnorm==0.1.1
+einops==0.8.0
+requests==2.32.3
+
+# Models / transformers
+transformers==4.43.3
+
+# Validation / typing
+pydantic==2.8.2
+PyYAML==6.0.2
+
+# Storage integration (optional S3)
+boto3==1.34.162

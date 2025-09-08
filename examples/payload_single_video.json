@@ -1,0 +1,16 @@
+{
+  "input": {
+    "prompt": "A person speaking to camera",
+    "cond_video": "https://example.com/media/input.mp4",
+    "cond_audio": { "person1": "https://example.com/audio/clean.wav" },
+    "size": "infinitetalk-480",
+    "mode": "clip",
+    "frame_num": 81,
+    "sample_steps": 12,
+    "sample_text_guide_scale": 1.0,
+    "sample_audio_guide_scale": 2.0,
+    "motion_frame": 9,
+    "base_seed": 42,
+    "output_config": { "store": "inline" }
+  }
+}

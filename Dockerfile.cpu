@@ -1,0 +1,43 @@
+# CPU-only slim image for CI/lint/local validation (NOT for inference)
+# Note: This image does NOT include CUDA and should not be used for GPU inference.
+FROM python:3.10-slim
+
+ENV DEBIAN_FRONTEND=noninteractive
+ENV PYTHONUNBUFFERED=1
+ENV HF_HOME=/root/.cache/huggingface
+ENV TRANSFORMERS_CACHE=/root/.cache/huggingface/transformers
+ENV WANDB_DISABLED=1
+
+# System deps: ffmpeg, libsndfile1 for audio/video IO
+RUN apt-get update && apt-get install -y --no-install-recommends \
+    ffmpeg \
+    libsndfile1 \
+    git \
+    ca-certificates \
+    curl \
+ && rm -rf /var/lib/apt/lists/*
+
+WORKDIR /workspace
+
+# Copy just requirements first for caching
+COPY InfiniteTalk_Runpod_Serverless/worker/requirements.txt ./InfiniteTalk_Runpod_Serverless/worker/requirements.txt
+
+# Install minimal Python deps for lint/CI.
+# We intentionally SKIP torch/torchvision/xformers/flash-attn because:
+#  - CPU wheels may be heavy/slow to install and are not needed for non-inference checks.
+#  - This image is for import-time validation and static checks only.
+RUN --mount=type=cache,target=/root/.cache/pip \
+    python -m pip install --no-cache-dir --upgrade pip setuptools wheel && \
+    grep -vE '^(torch|torchvision|xformers|flash-attn)\\b' InfiniteTalk_Runpod_Serverless/worker/requirements.txt > /tmp/req.txt && \
+    pip install --no-cache-dir -r /tmp/req.txt && \
+    rm -f /tmp/req.txt
+
+# Copy the whole repo for import checks
+COPY . /workspace
+
+# Workdir at the serverless package
+WORKDIR /workspace/InfiniteTalk_Runpod_Serverless
+
+# Not for GPU inference; used to validate imports and CLI entry boots.
+# Local run (for basic boot): docker run --rm infinitetalk-runpod:cpu python entrypoint.py
+ENTRYPOINT ["python", "entrypoint.py"]

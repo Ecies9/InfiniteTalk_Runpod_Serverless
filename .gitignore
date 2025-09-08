@@ -1,0 +1,36 @@
+# =========================
+# Project-specific .gitignore (Serverless subrepo)
+# Focus: local UI config, worker outputs/temp, large artifacts.
+# =========================
+
+# -------------------------
+# UI local config
+# -------------------------
+ui/.ui_config.json
+
+# -------------------------
+# Worker temp/output (generated)
+# -------------------------
+worker_outputs/
+worker_tmp/
+outputs/
+output/
+tmp/
+temp/
+logs/
+
+# -------------------------
+# Reinforce large artifacts (avoid accidental commits here)
+# -------------------------
+*.pt
+*.safetensors
+*.ckpt
+
+# -------------------------
+# Safeguards: keep docs and intentional tracked files
+# -------------------------
+!docs/**
+!.gitkeep
+!README.md
+
+# Note: use .gitkeep files to preserve empty directories when needed.
